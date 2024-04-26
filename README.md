@@ -195,4 +195,48 @@ class CounterApp extends StatelessWidget {
 }
 
 
+#Api Helper With Array Name
 
+  Future<List<ApiDataModle>> getApiData() async {
+    final response =
+        await http.get(Uri.parse("https://jsonplaceholder.typicode.com/users"));
+    var data = jsonDecode(response.body.toString());
+
+    if (response.statusCode == 200) {
+      for (Map<String, dynamic> i in data) {
+        apiDataList.add(ApiDataModle.fromJson(i));
+      }
+
+      return apiDataList;
+    } else {
+      return apiDataList;
+    }
+  }
+
+
+  body: Column(
+          children: [
+            Expanded(
+              child: FutureBuilder(
+                future: getApiData(),
+                builder: (context, AsyncSnapshot<List<ApiDataModle>> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListView.builder(
+                      itemCount: apiDataList.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Name"),
+                                      Text(snapshot.data![index].name
+                                          .toString()),
